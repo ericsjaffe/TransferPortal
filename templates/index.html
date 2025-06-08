@@ -2,16 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>PortalDecision - Transfer Industry</title>
+  <title>PortalDecision Rankings</title>
   <link rel="stylesheet" href="/static/style.css">
-  <meta http-equiv="refresh" content="300">
 </head>
 <body>
 
   <nav class="top-nav">
     <ul>
       <li><a href="/">Home</a></li>
-      <li><a href="/rankings">Rankings</a></li>
       <li><a href="/industry">Industry</a></li>
       <li style="margin-left:auto;"><a href="/login" class="btn">Login</a></li>
     </ul>
@@ -21,22 +19,39 @@
     <img src="/static/logo.png" alt="PortalDecision Logo" class="site-logo">
     <div>
       <h1>PortalDecision</h1>
-      <p class="subtitle">Football Transfer Portal Industry News</p>
+      <p class="subtitle">Football Transfer Rankings</p>
     </div>
   </header>
 
-  <main class="grid">
-    {% for update in updates %}
-    <div class="card">
-      <a href="{{ update.link }}" target="_blank">
-        {% if update.image %}
-        <img src="{{ update.image }}" alt="{{ update.title }}" class="card-image">
-        {% endif %}
-        <h2>{{ update.title }}</h2>
-        <p class="time">{{ update.time }}</p>
-      </a>
-    </div>
-    {% endfor %}
+  <main>
+    <table class="ranking-table">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Player</th>
+          <th>Pos</th>
+          <th>Rating</th>
+          <th>NIL Value</th>
+          <th>Status</th>
+          <th>Last Team</th>
+          <th>New Team</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in updates %}
+        <tr>
+          <td>{{ u.rank }}</td>
+          <td>{{ u.name }}</td>
+          <td>{{ u.position }}</td>
+          <td>{{ u.rating }}</td>
+          <td>{{ u.nil_value }}</td>
+          <td>{{ u.status }}</td>
+          <td>{{ u.last_team }}</td>
+          <td>{{ u.new_team }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </main>
 
   <footer>

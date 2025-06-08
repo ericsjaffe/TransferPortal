@@ -1,39 +1,44 @@
 import requests
 from bs4 import BeautifulSoup
 
-def get_industry_transfer_updates():
-    url = "https://www.on3.com/transfer-portal/industry/football/"
+def get_ranking_data():
+    url = "https://www.on3.com/transfer-portal/rankings/football/"
     headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(url, headers=headers, timeout=10)
     soup = BeautifulSoup(response.text, "html.parser")
 
     updates = []
-    cards = soup.select("div.TeaserWrapper")  # Updated to match On3 layout
+    rows = soup.select("tr")
 
-    for card in cards:
-        title_tag = card.select_one("h3")
-        link_tag = card.find("a", href=True)
-        img_tag = card.select_one("img")
-        time_tag = card.select_one("time")
-
-        if not title_tag or not link_tag:
+    for row in rows[1:]:
+        cols = row.find_all("td")
+        if len(cols) < 8:
             continue
 
-        title = title_tag.get_text(strip=True)
-        link = link_tag["href"]
-        if link.startswith("/"):
-            link = "https://www.on3.com" + link
-        image = img_tag["src"] if img_tag and img_tag.get("src") else None
-        time = time_tag.get_text(strip=True) if time_tag else "Recently"
+        try:
+            rank = cols[0].get_text(strip=True)
+            name = cols[1].get_text(strip=True)
+            position = cols[2].get_text(strip=True)
+            rating = cols[3].get_text(strip=True)
+            nil_value = cols[4].get_text(strip=True)
+            status = cols[5].get_text(strip=True)
+            last_team = cols[6].get_text(strip=True)
+            new_team = cols[7].get_text(strip=True)
 
-        updates.append({
-            "title": title,
-            "link": link,
-            "image": image,
-            "time": time
-        })
+            updates.append({
+                "rank": rank,
+                "name": name,
+                "position": position,
+                "rating": rating,
+                "nil_value": nil_value,
+                "status": status,
+                "last_team": last_team,
+                "new_team": new_team
+            })
+        except:
+            continue
 
-        if len(updates) >= 20:
+        if len(updates) >= 25:
             break
 
     return updates
