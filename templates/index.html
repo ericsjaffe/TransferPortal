@@ -1,113 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>PortalDecision - Rankings</title>
-  <link rel="stylesheet" href="/static/style.css" />
+    <meta charset="UTF-8">
+    <title>PortalDecision - NCAA Football Transfer Portal Top 200</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <nav class="top-nav">
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li style="margin-left:auto;"><a href="#" class="btn">Login</a></li>
-    </ul>
-  </nav>
-
-  <header class="site-header">
-    <img src="/static/logo.png" class="site-logo" />
-    <div>
-      <h1>PortalDecision</h1>
-      <p class="subtitle">Live Football Transfer Rankings</p>
-    </div>
-  </header>
-
-  <main>
-    <input type="text" id="search" placeholder="Search by player name..." />
-    <select id="positionFilter">
-      <option value="">All Positions</option>
-      <option value="QB">QB</option>
-      <option value="WR">WR</option>
-    </select>
-
-    <table class="ranking-table" id="rankingTable">
-      <thead>
-        <tr>
-          <th>Rank</th><th>Player</th><th>Pos</th><th>Rating</th><th>NIL</th>
-          <th>Status</th><th>Last Team</th><th>New Team</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div id="pagination"></div>
-  </main>
-
-  <footer><p>Data updated periodically • Powered by On3</p></footer>
-
-  <script>
-    let data = [];
-    let filtered = [];
-    let currentPage = 1;
-    const perPage = 25;
-
-    async function loadData() {
-      const res = await fetch("/static_data.json");
-      data = await res.json();
-      filtered = data;
-      renderTable();
-    }
-
-    function renderTable() {
-      const tbody = document.querySelector("#rankingTable tbody");
-      tbody.innerHTML = "";
-
-      const start = (currentPage - 1) * perPage;
-      const pageData = filtered.slice(start, start + perPage);
-
-      for (const p of pageData) {
-        const row = `<tr>
-          <td>${p.rank}</td>
-          <td><img src="${p.image_url}" class="avatar" /> ${p.name}</td>
-          <td>${p.position}</td>
-          <td>${p.rating}</td>
-          <td>${p.nil_value}</td>
-          <td>${p.status}</td>
-          <td>${p.last_team}</td>
-          <td>${p.new_team}</td>
-        </tr>`;
-        tbody.innerHTML += row;
-      }
-      renderPagination();
-    }
-
-    function renderPagination() {
-      const pageCount = Math.ceil(filtered.length / perPage);
-      const pagDiv = document.getElementById("pagination");
-      pagDiv.innerHTML = "";
-      for (let i = 1; i <= pageCount; i++) {
-        pagDiv.innerHTML += `<button onclick="gotoPage(${i})">${i}</button>`;
-      }
-    }
-
-    function gotoPage(p) {
-      currentPage = p;
-      renderTable();
-    }
-
-    document.getElementById("search").addEventListener("input", function (e) {
-      const q = e.target.value.toLowerCase();
-      filtered = data.filter(d => d.name.toLowerCase().includes(q));
-      currentPage = 1;
-      renderTable();
-    });
-
-    document.getElementById("positionFilter").addEventListener("change", function (e) {
-      const val = e.target.value;
-      filtered = val ? data.filter(d => d.position === val) : data;
-      currentPage = 1;
-      renderTable();
-    });
-
-    loadData();
-  </script>
+    <header>
+        <img src="/static/logo.png" alt="PortalDecision Logo" class="logo">
+        <h1>🏈 NCAA Transfer Portal Top 200 Players</h1>
+    </header>
+    <main>
+        <div class="card-grid">
+            {% for player in players %}
+            <div class="player-card">
+                <img src="{{ player.image_url }}" class="player-img" alt="{{ player.name }}">
+                <div class="player-info">
+                    <h2>{{ player.name }}</h2>
+                    <p>Rank: {{ player.rank }} | Position: {{ player.position }}</p>
+                    <p>Rating: {{ player.rating }} | NIL: {{ player.nil_value }}</p>
+                    <p>Status: {{ player.status }}</p>
+                    <div class="teams">
+                        {% if player.last_team_logo %}
+                        <img src="{{ player.last_team_logo }}" class="team-logo" title="{{ player.last_team }}">
+                        {% else %}
+                        <span>{{ player.last_team }}</span>
+                        {% endif %}
+                        <span class="transfer-arrow">→</span>
+                        {% if player.new_team_logo %}
+                        <img src="{{ player.new_team_logo }}" class="team-logo" title="{{ player.new_team }}">
+                        {% else %}
+                        <span>{{ player.new_team }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
 </body>
 </html>
