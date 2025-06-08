@@ -8,7 +8,7 @@ def get_industry_transfer_updates():
     soup = BeautifulSoup(response.text, "html.parser")
 
     updates = []
-    cards = soup.select("div.TeaserWrapper")
+    cards = soup.select("div.TeaserWrapper")  # Updated to match On3 layout
 
     for card in cards:
         title_tag = card.select_one("h3")
