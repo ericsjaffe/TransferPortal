@@ -1,20 +1,20 @@
 import requests
 from bs4 import BeautifulSoup
 
-def get_football_transfer_updates():
-    url = "https://www.on3.com/transfer-portal/wire/football/"
+def get_industry_transfer_updates():
+    url = "https://www.on3.com/transfer-portal/industry/football/"
     headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(url, headers=headers, timeout=10)
     soup = BeautifulSoup(response.text, "html.parser")
 
     updates = []
-    articles = soup.select("article")
+    cards = soup.select("div.TeaserWrapper")
 
-    for article in articles:
-        title_tag = article.select_one("h3")
-        link_tag = article.find("a", href=True)
-        img_tag = article.find("img")
-        time_tag = article.select_one("time")
+    for card in cards:
+        title_tag = card.select_one("h3")
+        link_tag = card.find("a", href=True)
+        img_tag = card.select_one("img")
+        time_tag = card.select_one("time")
 
         if not title_tag or not link_tag:
             continue

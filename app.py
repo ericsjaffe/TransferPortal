@@ -1,16 +1,16 @@
 from flask import Flask, render_template, jsonify
-from scraper import get_football_transfer_updates
+from scraper import get_industry_transfer_updates
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    updates = get_football_transfer_updates()
+    updates = get_industry_transfer_updates()
     return render_template("index.html", updates=updates)
 
 @app.route("/api/updates")
 def api_updates():
-    return jsonify(get_football_transfer_updates())
+    return jsonify(get_industry_transfer_updates())
 
 if __name__ == "__main__":
     app.run(debug=True)
