@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>PortalDecision Rankings (Static)</title>
+  <title>PortalDecision Rankings</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -16,8 +16,11 @@
   </nav>
 
   <header class="site-header">
-    <h1>PortalDecision</h1>
-    <p class="subtitle">Football Transfer Rankings (Static Data)</p>
+    <img src="/static/logo.png" alt="PortalDecision Logo" class="site-logo">
+    <div>
+      <h1>PortalDecision</h1>
+      <p class="subtitle">Top 200 Football Transfer Rankings</p>
+    </div>
   </header>
 
   <main>
@@ -38,7 +41,10 @@
         {% for u in updates %}
         <tr>
           <td>{{ u.rank }}</td>
-          <td>{{ u.name }}</td>
+          <td>
+            <img src="{{ u.image_url }}" alt="{{ u.name }}" class="avatar">
+            <span>{{ u.name }}</span>
+          </td>
           <td>{{ u.position }}</td>
           <td>{{ u.rating }}</td>
           <td>{{ u.nil_value }}</td>
@@ -52,7 +58,7 @@
   </main>
 
   <footer>
-    <p>Static sample data • Easily hostable on Render</p>
+    <p>Data powered by On3 (mock data) • Render-optimized</p>
   </footer>
 
 </body>
