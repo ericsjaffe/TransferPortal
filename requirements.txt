@@ -1,4 +1,1 @@
 flask
-selenium
-beautifulsoup4
-gunicorn
