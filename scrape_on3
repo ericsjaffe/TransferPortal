@@ -1,1 +1,74 @@
+import time
+import json
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+
+# ESPN team logo mapping (add more as needed)
+TEAM_LOGOS = {
+    "Alabama": "https://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+    "Georgia": "https://a.espncdn.com/i/teamlogos/ncaa/500/61.png",
+    "LSU": "https://a.espncdn.com/i/teamlogos/ncaa/500/99.png",
+    "Miami": "https://a.espncdn.com/i/teamlogos/ncaa/500/2390.png",
+    "Tennessee": "https://a.espncdn.com/i/teamlogos/ncaa/500/2633.png",
+    "UCLA": "https://a.espncdn.com/i/teamlogos/ncaa/500/26.png",
+    # Add more as you encounter them
+}
+
+def get_logo(team):
+    return TEAM_LOGOS.get(team, "")
+
+def scrape_portal_top200():
+    from selenium.webdriver.chrome.options import Options
+    options = Options()
+    options.add_argument('--headless=new')
+    options.add_argument('--window-size=1920,1080')
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    url = "https://www.on3.com/transfer-portal/industry/football/"
+    driver.get(url)
+    time.sleep(3)
+    for _ in range(10):
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(1.5)
+    rows = driver.find_elements(By.CSS_SELECTOR, "table tbody tr")
+    data = []
+    for i, row in enumerate(rows):
+        try:
+            tds = row.find_elements(By.TAG_NAME, "td")
+            rank = tds[0].text.strip()
+            name = tds[1].text.strip()
+            position = tds[2].text.strip()
+            rating = tds[3].text.strip()
+            nil_value = tds[4].text.strip()
+            status = tds[5].text.strip()
+            last_team = tds[6].text.strip()
+            new_team = tds[7].text.strip()
+            # Player image (if available)
+            img_tag = tds[1].find_element(By.TAG_NAME, "img")
+            image_url = img_tag.get_attribute("src") if img_tag else ""
+            player_data = {
+                "rank": int(rank) if rank.isdigit() else rank,
+                "name": name,
+                "position": position,
+                "rating": rating,
+                "nil_value": nil_value,
+                "status": status,
+                "last_team": last_team,
+                "new_team": new_team,
+                "image_url": image_url,
+                "last_team_logo": get_logo(last_team),
+                "new_team_logo": get_logo(new_team)
+            }
+            data.append(player_data)
+        except Exception as e:
+            print(f"Row {i} error: {e}")
+        if len(data) >= 200:
+            break
+    driver.quit()
+    with open("static_data.json", "w") as f:
+        json.dump(data, f, indent=2)
+    print("Saved top 200 players to static_data.json")
+
+if __name__ == "__main__":
+    scrape_portal_top200()
 
