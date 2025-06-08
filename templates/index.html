@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PortalDecision Football Wire</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <meta http-equiv="refresh" content="300">
+</head>
+<body>
+
+  <nav class="top-nav">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/rankings">Rankings</a></li>
+      <li><a href="/about">About</a></li>
+      <li style="margin-left:auto;"><a href="/login" class="btn">Login</a></li>
+    </ul>
+  </nav>
+
+  <header class="site-header">
+    <img src="/static/logo.png" alt="PortalDecision Logo" class="site-logo">
+    <div>
+      <h1>PortalDecision</h1>
+      <p class="subtitle">NCAA Football Transfer Wire</p>
+    </div>
+  </header>
+
+  <main class="grid">
+    {% for update in updates %}
+    <div class="card">
+      <a href="{{ update.link }}" target="_blank">
+        {% if update.image %}
+        <img src="{{ update.image }}" alt="{{ update.title }}" class="card-image">
+        {% endif %}
+        <h2>{{ update.title }}</h2>
+        <p class="time">{{ update.time }}</p>
+      </a>
+    </div>
+    {% endfor %}
+  </main>
+
+  <footer>
+    <p>Data sourced from On3 • Updated every 5 minutes</p>
+  </footer>
+
+</body>
+</html>
