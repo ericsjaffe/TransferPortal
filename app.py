@@ -1,16 +1,15 @@
-from flask import Flask, render_template
-import json
+from flask import Flask, render_template, send_from_directory
+import os
 
 app = Flask(__name__)
 
-def get_static_data():
-    with open("static_data.json", "r") as f:
-        return json.load(f)
-
 @app.route("/")
 def home():
-    updates = get_static_data()
-    return render_template("index.html", updates=updates)
+    return render_template("index.html")
+
+@app.route("/static_data.json")
+def static_data():
+    return send_from_directory(".", "static_data.json")
 
 if __name__ == "__main__":
     app.run(debug=True)
